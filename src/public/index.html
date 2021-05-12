@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identity</title>
+    
+</head>
+<body>
+    <h1>Identity</h1>
+    <!-- <input type="file" id="file" name="file" />
+
+
+    <script>
+
+        document.getElementById('file').onchange = async function(evt) {
+            console.log('hola');
+            const formData = new FormData();
+
+            const operations = `{ 
+                "query": "mutation ($photo: Upload!, $names: String, $surnames: String, $birthday: Date) { update(photo: $photo, names: $names, surnames: $surnames, birthday: $birthday ) { names } }", 
+                "variables": { "photo": null, "names": "Miguel Angel", "surnames": "Ochoa Torres", "birthday": "${new Date().toISOString()}" } 
+            }`;
+
+            formData.append("operations", operations);
+            const map = `{"nfile": ["variables.photo"]}`
+            formData.append("map", map)
+            formData.append("nfile", event.target.files[0])
+
+            console.log(formData);
+            const result = await fetch("/api/user", {
+                headers: {
+                    'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMDQ2ZjBiZGM0ZmExMjU1ODFjZTBmYSIsImlhdCI6MTYxMDkwMzMwN30.aNPQxMAdaRyPiBv6OsZNWW79uK_I-TbbOiDirKG_g-U'
+                },
+                body: formData,
+                method: "post",
+            });
+
+            const json = await result.json();
+
+            console.log(json);
+        };
+
+        
+
+        
+    </script> -->
+
+    
+</body>
+</html>
