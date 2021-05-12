@@ -1,9 +1,6 @@
 /** @format */
-
-import { IApp } from "./app";
 import { ICity, ICountry } from "./country";
-import { IImage } from "./demo";
-import { Id, Input } from "./shared";
+import { Id, IImage, IApp } from "./shared";
 
 export enum Gender {
   OTHER,

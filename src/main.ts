@@ -9,9 +9,8 @@ import env, { publicPath } from "./env";
 import { chiripaConnect } from "./connections/mongo";
 import { intSocket$ } from "./connections/socket";
 
-import usersRoutes from "./routes/user.route";
-import authRoutes from "./routes/auth.route";
-import appRoutes from "./routes/app.route";
+import raffleRoutes from "./routes/raffle.route";
+import profileRoutes from "./routes/profile.route";
 import { urlMiddleware } from "./middlewares/auth.middleware";
 
 export const app: Application = express();
@@ -24,10 +23,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(publicPath));
 
-app.use("/api/user", usersRoutes);
-app.use("/api/auth", authRoutes);
-app.use("/api/app", appRoutes);
-
+app.use("/api/profile", profileRoutes);
+app.use("/api/raffle", raffleRoutes);
 app.all("/api/*", urlMiddleware);
 
 server.listen(env.port, async () => {

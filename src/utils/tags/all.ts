@@ -1,5 +1,6 @@
 /** @format */
 
+import { Tag } from "../../repositories/tag.repository";
 import animals from "./animals";
 import brants from "./brants";
 import colors from "./colors";
@@ -39,6 +40,19 @@ const all = [
 
 const words: string[] = [];
 const sentences: string[] = [];
+
+let excludes: string[] = [];
+
+export const addExclude = (tags: string[]) => {
+  if (excludes.length > 500) {
+    excludes.forEach(async (x) => {
+      const tag = await Tag.findOne({ grandpa: "", tag: x });
+      if (!tag) await new Tag({ grandpa: "", tag: x }).save();
+    });
+    excludes = [];
+  }
+  excludes.push(...tags);
+};
 
 while (all.length) {
   if (all[0].split(" ").length >= 2) sentences.push(all[0]);

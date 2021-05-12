@@ -3,7 +3,7 @@
 import { Router } from "express";
 import * as appCtrl from "../controllers/app.controller";
 import { imagesMiddleware } from "../middlewares/images.middleware";
-import { tokenMiddleware } from "../middlewares/user.middleware";
+import { tokenMiddleware } from "../middlewares/auth.middleware";
 
 const router = Router();
 //, tokenMiddleware
