@@ -7,6 +7,7 @@ type IPlayerRepository = IPlayer & Document;
 
 export const playerSchema = new Schema({
   userId: String,
+  photoUser: String,
   tickets: [String],
 });
 

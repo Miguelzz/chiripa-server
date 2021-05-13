@@ -1,16 +1,12 @@
 /** @format */
-import fetch from "node-fetch";
-
 import { Profile } from "../repositories/profile.repository";
 import { ErrorMessage, RouteParams } from "../utils/types";
 import { cloudinary } from "../connections/cloundinary";
-import { IImage } from "../models/shared";
 import { IProfile } from "../models/profile";
-import { IRaffle } from "../models/raffle";
 import { Raffle } from "../repositories/raffle.repository";
 import { analyzeQuery } from "../utils/tags/search";
-import { Tag } from "../repositories/tag.repository";
 import { addExclude } from "../utils/tags/all";
+import { getUser } from "./profile.controller";
 
 const createTickets = (count: number) => {
   const ticket = () => {
@@ -31,13 +27,24 @@ export const buyTicket: RouteParams = async (req, res) => {
     tickets: { $all: tickets },
   });
 
-  if (raffle && !raffle.players.some((x: any) => x.userId === req.userId)) {
+  if (
+    raffle &&
+    !raffle.players.some(
+      (x: any) =>
+        x.userId === req.userId &&
+        x.tickets.some((t: any) => tickets.includes(t))
+    )
+  ) {
     // realizar pagos
+
+    const token = req.headers["x-token"] as string;
+    const user = await getUser(token);
 
     await Raffle.findByIdAndUpdate(raffleId, {
       $push: {
         players: {
           userId: req.userId as any,
+          photoUser: user.photo?.secure_url || "",
           tickets,
         },
       },
@@ -61,9 +68,31 @@ export const getRaffle: RouteParams = async (req, res) => {
   res.json(profile.raffles);
 };
 
+export const searchRaffle: RouteParams = async (req, res) => {
+  const query = analyzeQuery(req.query.q as string);
+  const page = req.query.page || 0;
+  const limit = req.query.limit || 10;
+  let filter;
+  if (!(req.query.q as string)?.trim())
+    filter = await (Raffle as any).paginate({}, { page, limit });
+  else
+    filter = await (Raffle as any).paginate(
+      {
+        tags: {
+          $all: query.tags.map(
+            (x) => new RegExp(`\\b${x.slice(0, x.length - 1)}(a|o)?\\b`)
+          ),
+        },
+      },
+      { page, limit }
+    );
+  res.json(filter);
+};
+
 export const createRaffle: RouteParams = async (req, res) => {
   const files = (req.files as Express.Multer.File[]) || [];
-  const { drawDate, name, description, numberOfTickets } = req.body;
+  const { drawDate, name, description, numberOfTickets, totalPrice } = req.body;
+  console.log({ drawDate, name, description, numberOfTickets });
   const { tags, exclude } = analyzeQuery(`${name} ${description}`);
   const nameRaffle = name.replace(/\s+/g, " ").trim().toUpperCase();
   addExclude(exclude);
@@ -93,6 +122,7 @@ export const createRaffle: RouteParams = async (req, res) => {
         tags,
         description,
         drawDate,
+        totalPrice,
         tickets,
         images,
       }).save();

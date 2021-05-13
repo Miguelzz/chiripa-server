@@ -8,7 +8,8 @@ export interface IRaffle {
   name: string;
   tags: string[];
   description: string;
-  drawDate: Date;
+  drawDate: string;
+  totalPrice: number;
   tickets: string[];
   players: IPlayer[];
   images: IImage[];
